@@ -17,7 +17,7 @@ const handleLoginLogout = () => {
 </script>
 
 <template>
-  <div class="layout">
+  <div :class="['layout', { 'sidebar-open': isSidebarOpen }]">
     <!-- Top Header -->
     <header class="top">
       <div class="top-left">
@@ -77,21 +77,31 @@ body {
   font-family: Arial, sans-serif;
   background-color: #fff;
   color: #333;
-  grid-template-areas:
-    layout;
 }
 
 .layout {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  grid-template-columns: auto 1fr;
-  /* 사이드바와 콘텐츠를 나란히 배치 */
+  grid-template-columns: 250px 1fr;
+  /* 기본 사이드바 너비 */
   grid-template-areas:
     "top top"
     "sidebar content"
-    "sidebar bottom";
+    "bottom bottom";
   height: 100%;
   width: 100%;
+  transition: grid-template-columns 0.3s ease-in-out;
+  /* 부드러운 전환 */
+}
+
+.layout.sidebar-open {
+  grid-template-columns: 250px 1fr;
+  /* 사이드바 열림 상태 */
+}
+
+.layout:not(.sidebar-open) {
+  grid-template-columns: 0px 1fr;
+  /* 사이드바 닫힘 상태 */
 }
 
 .top {
@@ -126,14 +136,23 @@ body {
   background-color: #f8f9fa;
   padding: 1rem;
   border-right: 1px solid #ddd;
-  transform: translateX(-100%);
-  /* 기본적으로 숨김 */
-  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+  width: 250px;
+  /* 기본 너비 */
 }
 
 .sidebar.open {
   transform: translateX(0);
   /* 열릴 때 */
+  display: block;
+  /* 열릴 때 표시 */
+}
+
+.layout:not(.sidebar-open) .sidebar {
+  transform: translateX(-100%);
+  display: none;
+  /* 닫힐 때 완전히 숨김 */
 }
 
 .content {
